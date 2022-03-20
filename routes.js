@@ -22,9 +22,9 @@ const api_key = 'XyfGexV5dD7h0K4I05ycyNYc9oF5waptcu82RckQ'
 async function hello(req, res) {
     // a GET request to /hello?name=Steve
     if (req.query.name) {
-        res.send(`Hello, ${req.query.name}! Welcome to National Parks finder - updated!`)
+        res.send(`Hello!! ${req.query.name}! Welcome to National Parks finder!`)
     } else {
-        res.send(`Hello! Welcome to National Parks finder!`)
+        res.send(`Hello!! Welcome to National Parks finder!`)
     }
 }
 

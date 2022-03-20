@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql      = require('mysql');
 var cors = require('cors')
-let PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 8080;
 
 const routes = require('./routes')
 const config = require('./config.json')
@@ -43,7 +43,7 @@ app.listen(PORT, () => {
 });
 
 app.get("/", (req, res) => {
-    res.send("Hello world");
+    res.send("Hello world - successfully connected");
 });
 
 module.exports = app;

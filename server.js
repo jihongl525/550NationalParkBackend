@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql      = require('mysql');
 var cors = require('cors')
-
+let PORT = process.env.PORT || 3000;
 
 const routes = require('./routes')
 const config = require('./config.json')
@@ -38,8 +38,12 @@ app.get('/species/:parkid', routes.species_categories_by_park)
 // Route 9 - get ranked list of common species based on number of appearances in parks
 app.get('/speciesnativeness/:parkid', routes.species_nativeness_by_park)
 
-app.listen(config.server_port, () => {
-    console.log(`Server running at http://${config.server_host}:${config.server_port}/`);
+app.listen(PORT, () => {
+    console.log(`Server running at http://${config.server_host}:${PORT}/`);
+});
+
+app.get("/", (req, res) => {
+    res.send("Hello world");
 });
 
 module.exports = app;

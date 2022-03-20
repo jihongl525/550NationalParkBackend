@@ -4,6 +4,5 @@
     "rds_user": "admin",
     "rds_password" : "password",
     "rds_db": "national_parks",
-    "server_host": "127.0.0.1",
-    "server_port":"8080"
+    "server_host": "127.0.0.1"
 }

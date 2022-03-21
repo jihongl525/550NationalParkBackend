@@ -28,7 +28,7 @@ async function hello(req, res) {
 }
 
 
-// Route 2 - get park details by park name
+// Route 2 - get park details by park code
 // retrieve details about a park, such as name, description, available activities, contacts, and entrance fees.
 // e.g. http://localhost:8080/parkdetails/?parkid=acad
 async function park_details(req, res) {
@@ -59,12 +59,10 @@ async function park_details(req, res) {
     }
 }
 
-// Route 3 - get park by state - removed due to duplication with route 4
 
-// Route 4 - get park by combination of attributes (name, state, numSpecies, numAirports, numEVStations)
+// Route 3 - get park by combination of attributes (name, state, numSpecies, numAirports, numEVStations)
 // retrieve additional info about a park including the number of species, the number of nearby airports, and the number of nearby EV stations
 // e.g. http://localhost:8080/search/parks?state=UT&speciesmorethan=100&parkname=canyon&airportsmorethan=2&evsmorethan=3
-
 async function search_parks(req, res) {
     var state = req.query.state ? req.query.state : "";
 
@@ -140,8 +138,10 @@ async function search_parks(req, res) {
 
 }
 
-// Route 5 - get all parks
+
+// Route 4 - get all parks
 // retrieve all US national parks
+// http://localhost:8080/parks
 async function all_parks(req, res) {
     
     req.query.pagesize = req.query.pagesize ? req.query.pagesize : 10
@@ -174,7 +174,8 @@ async function all_parks(req, res) {
     }
 }
 
-// Route 6 - get airports by park
+
+// Route 5 - get airports by park
 // retrieve airports that are close to a specific park
 // e.g. http://localhost:8080/airports/noca
 async function airports_by_park(req, res) {
@@ -196,7 +197,8 @@ async function airports_by_park(req, res) {
     }
 }
 
-// Route 7 - get EV stations by park
+
+// Route 6 - get EV stations by park
 // retrieve EV stations that are close to a specific park
 // e.g. http://localhost:8080/evstations/noca
 async function evstations_by_park(req, res) {
@@ -218,7 +220,8 @@ async function evstations_by_park(req, res) {
     }
 }
 
-// Route 8 - get species distribution by category by park
+
+// Route 7 - get species distribution by category by park
 // retrieve the number of species by category for a specific park
 // e.g. http://localhost:8080/species/noca
 async function species_categories_by_park(req, res) {
@@ -239,7 +242,8 @@ async function species_categories_by_park(req, res) {
     }
 }
 
-// Route 9 - get number of Native and Not Native species by park
+
+// Route 8 - get number of Native and Not Native species by park
 // retrieve the number of native and non-native species for a specific park
 // e.g. http://localhost:8080/speciesnativeness/zion
 async function species_nativeness_by_park(req, res) {

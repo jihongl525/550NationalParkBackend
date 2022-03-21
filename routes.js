@@ -28,7 +28,7 @@ async function hello(req, res) {
 }
 
 
-// Route 2 - get park details by park code
+// Route 2 - get details about a park via NPS Data API
 // retrieve details about a park, such as name, description, available activities, contacts, and entrance fees.
 // e.g. http://localhost:8080/parkdetails/?parkid=acad
 async function park_details(req, res) {

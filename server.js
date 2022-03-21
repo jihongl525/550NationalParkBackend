@@ -14,27 +14,25 @@ app.use(cors({ credentials: true, origin: ['http://localhost:3000'] }));
 // Route 1 - welcome
 app.get('/hello', routes.hello)
 
-// Route 2 - get park details by park name
+// Route 2 - get details about a park via NPS Data API
 app.get('/parkdetails', routes.park_details)
 
-// Route 3 - get park by state - removed due to duplication with route 4
-
-// Route 4 - get park by combination of attributes (name, state, numSpecies)
+// Route 3 - get park by combination of attributes (name, state, numSpecies)
 app.get('/search/parks', routes.search_parks)
 
-// Route 5 - get all parks
+// Route 4 - get all parks
 app.get('/parks', routes.all_parks)
 
-// Route 6 - get airports by park
+// Route 5 - get airports by park
 app.get('/airports/:parkid', routes.airports_by_park)
 
-// Route 7 - get EV stations by park
+// Route 6 - get EV stations by park
 app.get('/evstations/:parkid', routes.evstations_by_park)
 
-// Route 8 - get species distribution by category by park
+// Route 7 - get species distribution by category by park
 app.get('/species/:parkid', routes.species_categories_by_park)
 
-// Route 9 - get ranked list of common species based on number of appearances in parks
+// Route 8 - get ranked list of common species based on number of appearances in parks
 app.get('/speciesnativeness/:parkid', routes.species_nativeness_by_park)
 
 app.listen(PORT, () => {

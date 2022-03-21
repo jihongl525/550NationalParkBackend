@@ -4,7 +4,6 @@ const e = require('express');
 const https = require('https');
 const { url } = require('inspector');
 
-// TODO: fill in your connection details here
 const connection = mysql.createConnection({
     host: config.rds_host,
     user: config.rds_user,
@@ -22,9 +21,9 @@ const api_key = 'XyfGexV5dD7h0K4I05ycyNYc9oF5waptcu82RckQ'
 async function hello(req, res) {
     // a GET request to /hello?name=Steve
     if (req.query.name) {
-        res.send(`Hello!! ${req.query.name}! Welcome to National Parks finder!`)
+        res.send(`Hello ${req.query.name}! Welcome to National Parks finder!`)
     } else {
-        res.send(`Hello!! Welcome to National Parks finder!`)
+        res.send(`Hello! Welcome to National Parks finder!`)
     }
 }
 
@@ -60,28 +59,11 @@ async function park_details(req, res) {
     }
 }
 
-// Route 3 - get parks by state (*** delete if not used, overlaps with search_parks)
-// retrieve national parks in a specific state
-// e.g. http://localhost:8080/parksbystate/?state=WA
-async function parks_by_state(req, res) {
-    if (req.query.state) {
-        connection.query(
-            `SELECT * FROM Parks WHERE State = '${req.query.state}'`, function (error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            });
-    } else {
-        res.json({"error": "State ID not specified!"})
-    }
-}
+// Route 3 - get park by state - removed due to duplication with route 4
 
 // Route 4 - get park by combination of attributes (name, state, numSpecies, numAirports, numEVStations)
 // retrieve additional info about a park including the number of species, the number of nearby airports, and the number of nearby EV stations
-// e.g. http://localhost:8080/search/parks?state=UT&speciesmorethan=100&parkname=canyon
+// e.g. http://localhost:8080/search/parks?state=UT&speciesmorethan=100&parkname=canyon&airportsmorethan=2&evsmorethan=3
 
 async function search_parks(req, res) {
     var state = req.query.state ? req.query.state : "";
@@ -89,6 +71,10 @@ async function search_parks(req, res) {
     var parkname = req.query.parkname ? req.query.parkname : "";
 
     var numspecies = req.query.speciesmorethan ? req.query.speciesmorethan : 0;
+
+    var numairports = req.query.airportsmorethan ? req.query.airportsmorethan : -1;
+
+    var numevs = req.query.evsmorethan ? req.query.evsmorethan : -1;
 
     var pagesize = req.query.pagesize ? req.query.pagesize : 10;
 
@@ -103,7 +89,7 @@ async function search_parks(req, res) {
             HAVING COUNT(DISTINCT Scientific_Name) > '${numspecies}' 
         )
 
-        SELECT SMT.Park_Name, SMT.State, numSpecies, COUNT(DISTINCT AP.Airport_ID) AS numAirports, COUNT(DISTINCT EVP.Station_ID) AS numEVS
+        SELECT SMT.Park_Code, SMT.Park_Name, SMT.State, numSpecies, COUNT(DISTINCT AP.Airport_ID) AS numAirports, COUNT(DISTINCT EVP.Station_ID) AS numEVS
         FROM speciesMoreThan SMT
         LEFT JOIN Airports_Near_Parks AP on SMT.Park_Code = AP.Park_Code
         LEFT JOIN Airports A on AP.Airport_ID = A.ID
@@ -113,6 +99,7 @@ async function search_parks(req, res) {
             AND SMT.State LIKE '%${state}%' 
             AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
             GROUP BY SMT.Park_Name, SMT.State, numSpecies
+            HAVING numAirports > '${numairports}' AND numEVS > '${numevs}' 
         LIMIT ${pagesize}
         OFFSET ${offset}`, function (error, results, fields) {
             if (error) {
@@ -131,7 +118,7 @@ async function search_parks(req, res) {
             HAVING COUNT(DISTINCT Scientific_Name) > '${numspecies}'
         )
 
-        SELECT SMT.Park_Name, SMT.State, numSpecies, COUNT(DISTINCT AP.Airport_ID) AS numAirports, COUNT(DISTINCT EVP.Station_ID) AS numEVS
+        SELECT SMT.Park_Code, SMT.Park_Name, SMT.State, numSpecies, COUNT(DISTINCT AP.Airport_ID) AS numAirports, COUNT(DISTINCT EVP.Station_ID) AS numEVS
         FROM speciesMoreThan SMT
         LEFT JOIN Airports_Near_Parks AP on SMT.Park_Code = AP.Park_Code
         LEFT JOIN Airports A on AP.Airport_ID = A.ID
@@ -140,7 +127,8 @@ async function search_parks(req, res) {
         WHERE SMT.Park_Name LIKE '%${parkname}%'
             AND SMT.State LIKE '%${state}%' 
             AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
-            GROUP BY SMT.Park_Name, SMT.State, numSpecies`, function (error, results, fields) {
+            GROUP BY SMT.Park_Name, SMT.State, numSpecies
+            HAVING numAirports > '${numairports}' AND numEVS > '${numevs}'`, function (error, results, fields) {
             if (error) {
                 console.log(error)
                 res.json({ error: error })
@@ -280,7 +268,6 @@ module.exports = {
     hello,
     all_parks,
     park_details,
-    parks_by_state,
     search_parks,
     airports_by_park,
     evstations_by_park,

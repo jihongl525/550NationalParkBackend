@@ -17,8 +17,7 @@ app.get('/hello', routes.hello)
 // Route 2 - get park details by park name
 app.get('/parkdetails', routes.park_details)
 
-// Route 3 - get park by state
-app.get('/parksbystate', routes.parks_by_state)
+// Route 3 - get park by state - removed due to duplication with route 4
 
 // Route 4 - get park by combination of attributes (name, state, numSpecies)
 app.get('/search/parks', routes.search_parks)

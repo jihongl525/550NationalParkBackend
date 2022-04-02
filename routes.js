@@ -180,7 +180,7 @@ async function all_parks(req, res) {
 // e.g. http://localhost:8080/airports/noca
 async function airports_by_park(req, res) {
     if (req.params.parkid) {
-        connection.query(`SELECT A.IATA_Code, A.Name, A.Municipality, A.State_Abbr
+        connection.query(`SELECT A.Name, A.State_Abbr
             FROM Airports_Near_Parks AP 
             JOIN Airports A ON (A.ID = AP.Airport_ID)
             WHERE Park_Code = '${req.params.parkid}'
@@ -206,8 +206,7 @@ async function evstations_by_park(req, res) {
         connection.query(`SELECT EV.Name, EV.Address, EV.City, EV.State, EV.Zip
             FROM EV_Stations_Near_Parks EVP 
             JOIN EV_Stations EV ON (EV.ID = EVP.Station_ID)
-            WHERE Park_Code = '${req.params.parkid}'
-                AND EV.Access_Type = 'public'`, function (error, results, fields) {
+            WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })
@@ -243,31 +242,6 @@ async function species_categories_by_park(req, res) {
 }
 
 
-// Route 8 - get number of Native and Not Native species by park
-// retrieve the number of native and non-native species for a specific park
-// e.g. http://localhost:8080/speciesnativeness/zion
-async function species_nativeness_by_park(req, res) {
-    if (req.params.parkid) {
-        connection.query(`
-        WITH native AS (SELECT Park_Code, COUNT(DISTINCT Scientific_Name) AS numNative FROM Species WHERE Nativeness = 'Native' GROUP BY Park_Code)
-        , notNative AS (SELECT Park_Code, COUNT(DISTINCT Scientific_Name) AS numNotNative FROM Species WHERE Nativeness = 'Not Native' GROUP BY Park_Code)
-        
-        SELECT n.Park_Code, numNative, numNotNative
-        FROM native n
-        JOIN notNative nn on n.Park_Code = nn.Park_Code
-        WHERE n.Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
-                if (error) {
-                    console.log(error)
-                    res.json({ error: error })
-                } else if (results) {
-                    res.json({ results: results })
-                }
-            });
-    } else {
-        res.json({"error": "Park ID not specified!"})
-    }
-}
-
 module.exports = {
     hello,
     all_parks,
@@ -276,5 +250,4 @@ module.exports = {
     airports_by_park,
     evstations_by_park,
     species_categories_by_park,
-    species_nativeness_by_park
 }

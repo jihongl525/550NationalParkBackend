@@ -92,7 +92,6 @@ async function search_parks(req, res) {
         LEFT JOIN Airports_Near_Parks AP on SMT.Park_Code = AP.Park_Code
         LEFT JOIN Airports A on AP.Airport_ID = A.ID
         LEFT JOIN EV_Stations_Near_Parks EVP on SMT.Park_Code = EVP.Park_Code
-        LEFT JOIN EV_Stations EV on EVP.Station_ID = EV.ID
         WHERE SMT.Park_Name LIKE '%${parkname}%'
             AND SMT.State LIKE '%${state}%' 
             AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
@@ -121,7 +120,6 @@ async function search_parks(req, res) {
         LEFT JOIN Airports_Near_Parks AP on SMT.Park_Code = AP.Park_Code
         LEFT JOIN Airports A on AP.Airport_ID = A.ID
         LEFT JOIN EV_Stations_Near_Parks EVP on SMT.Park_Code = EVP.Park_Code
-        LEFT JOIN EV_Stations EV on EVP.Station_ID = EV.ID
         WHERE SMT.Park_Name LIKE '%${parkname}%'
             AND SMT.State LIKE '%${state}%' 
             AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
@@ -180,7 +178,7 @@ async function all_parks(req, res) {
 // e.g. http://localhost:8080/airports/noca
 async function airports_by_park(req, res) {
     if (req.params.parkid) {
-        connection.query(`SELECT A.Name, A.State_Abbr
+        connection.query(`SELECT DISTINCT A.Name, A.State_Abbr
             FROM Airports_Near_Parks AP 
             JOIN Airports A ON (A.ID = AP.Airport_ID)
             WHERE Park_Code = '${req.params.parkid}'
@@ -203,7 +201,7 @@ async function airports_by_park(req, res) {
 // e.g. http://localhost:8080/evstations/noca
 async function evstations_by_park(req, res) {
     if (req.params.parkid) {
-        connection.query(`SELECT EV.Name, EV.Address, EV.City, EV.State, EV.Zip
+        connection.query(`SELECT DISTINCT EV.Name, EV.Address, EV.City, EV.State, EV.Zip
             FROM EV_Stations_Near_Parks EVP 
             JOIN EV_Stations EV ON (EV.ID = EVP.Station_ID)
             WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {

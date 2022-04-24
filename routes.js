@@ -84,7 +84,7 @@ async function search_parks(req, res) {
             FROM Species S
             JOIN Parks P on S.Park_Code = P.Park_Code
             GROUP BY P.Park_Code, P.Park_Name, P.State
-            HAVING COUNT(DISTINCT Scientific_Name) > '${numspecies}' 
+            HAVING COUNT(DISTINCT Scientific_Name) >= '${numspecies}' 
         )
 
         SELECT SMT.Park_Code, SMT.Park_Name, SMT.State, numSpecies, COUNT(DISTINCT AP.Airport_ID) AS numAirports, COUNT(DISTINCT EVP.Station_ID) AS numEVS
@@ -96,7 +96,7 @@ async function search_parks(req, res) {
             AND SMT.State LIKE '%${state}%' 
             AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
             GROUP BY SMT.Park_Name, SMT.State, numSpecies
-            HAVING numAirports > '${numairports}' AND numEVS > '${numevs}' 
+            HAVING numAirports >= '${numairports}' AND numEVS >= '${numevs}' 
         LIMIT ${pagesize}
         OFFSET ${offset}`, function (error, results, fields) {
             if (error) {
@@ -112,7 +112,7 @@ async function search_parks(req, res) {
             FROM Species S
             JOIN Parks P on S.Park_Code = P.Park_Code
             GROUP BY P.Park_Code, P.Park_Name, P.State
-            HAVING COUNT(DISTINCT Scientific_Name) > '${numspecies}'
+            HAVING COUNT(DISTINCT Scientific_Name) >= '${numspecies}'
         )
 
         SELECT SMT.Park_Code, SMT.Park_Name, SMT.State, numSpecies, COUNT(DISTINCT AP.Airport_ID) AS numAirports, COUNT(DISTINCT EVP.Station_ID) AS numEVS
@@ -124,7 +124,7 @@ async function search_parks(req, res) {
             AND SMT.State LIKE '%${state}%' 
             AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
             GROUP BY SMT.Park_Name, SMT.State, numSpecies
-            HAVING numAirports > '${numairports}' AND numEVS > '${numevs}'`, function (error, results, fields) {
+            HAVING numAirports >= '${numairports}' AND numEVS >= '${numevs}'`, function (error, results, fields) {
             if (error) {
                 console.log(error)
                 res.json({ error: error })

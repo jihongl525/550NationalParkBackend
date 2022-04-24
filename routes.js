@@ -176,14 +176,30 @@ async function all_parks(req, res) {
 // Route 5 - get airports by park
 // retrieve airports that are close to a specific park
 // e.g. http://localhost:8080/airports/noca
-
-// SELECT DISTINCT A.Name, A.State_Abbr AS State
-// FROM Airports_Near_Parks AP 
-// JOIN Airports A ON (A.ID = AP.Airport_ID)
-// WHERE Park_Code = '${req.params.parkid}'
-//     AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')
 async function airports_by_park(req, res) {
+    // without view
+    // if (req.params.parkid) {
+    //     console.time('without-view')
+    //     connection.query(`SELECT DISTINCT A.Name, A.State_Abbr AS State
+    //         FROM Airports_Near_Parks AP 
+    //         JOIN Airports A ON (A.ID = AP.Airport_ID)
+    //         WHERE Park_Code = '${req.params.parkid}'
+    //         AND A.Type IN ('small_airports', 'medium_airport', 'large_airport')`, function (error, results, fields) {
+    //             if (error) {
+    //                 console.log(error)
+    //                 res.json({ error: error })
+    //             } else if (results) {
+    //                 res.json({ results: results })
+    //             }
+    //         });
+    //     console.timeEnd('without-view')
+    // } else {
+    //     res.json({"error": "Park ID not specified!"})
+    // }
+
+    // with view
     if (req.params.parkid) {
+        console.time('with-view')
         connection.query(`SELECT DISTINCT Name, State
             FROM Airports_Near_Parks_View
             WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
@@ -194,6 +210,7 @@ async function airports_by_park(req, res) {
                     res.json({ results: results })
                 }
             });
+        console.timeEnd('with-view')
     } else {
         res.json({"error": "Park ID not specified!"})
     }
@@ -202,14 +219,30 @@ async function airports_by_park(req, res) {
 
 // Route 6 - get EV stations by park
 // retrieve EV stations that are close to a specific park
-// e.g. http://localhost:8080/evstations/noca
-
-// SELECT DISTINCT EV.Name, EV.Address, EV.City, EV.State, EV.Zip
-// FROM EV_Stations_Near_Parks EVP 
-// JOIN EV_Stations EV ON (EV.ID = EVP.Station_ID)
-// WHERE Park_Code = '${req.params.parkid}'
+// e.g. http://localhost:8080/evstations/yose
 async function evstations_by_park(req, res) {
+    // without view
+    // if (req.params.parkid) {
+    //     console.time('without-view')
+    //     connection.query(`SELECT DISTINCT EV.Name, EV.Address, EV.City, EV.State, EV.Zip
+    //     FROM EV_Stations_Near_Parks EVP 
+    //     JOIN EV_Stations EV ON (EV.ID = EVP.Station_ID)
+    //     WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
+    //             if (error) {
+    //                 console.log(error)
+    //                 res.json({ error: error })
+    //             } else if (results) {
+    //                 res.json({ results: results })
+    //             }
+    //         });
+    //     console.timeEnd('without-view')
+    // } else {
+    //     res.json({"error": "Park ID not specified!"})
+    // }
+
+    // with view
     if (req.params.parkid) {
+        console.time('with-view')
         connection.query(`SELECT Name, Address, City, State, Zip
             FROM EV_Stations_Near_Parks_View
             WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
@@ -220,6 +253,7 @@ async function evstations_by_park(req, res) {
                     res.json({ results: results })
                 }
             });
+        console.timeEnd('with-view')
     } else {
         res.json({"error": "Park ID not specified!"})
     }

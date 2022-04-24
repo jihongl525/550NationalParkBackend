@@ -282,6 +282,35 @@ async function species_categories_by_park(req, res) {
 }
 
 
+// Route 8 - get unique scientific names for the park
+// retrieve the unique scientific names to a park (i.e. not found in any other national parks)
+// e.g. http://localhost:8080/uniquespecies/noca
+async function unique_species_by_park(req, res) {
+    if (req.params.parkid) {
+        connection.query(`WITH species_in_park AS (
+            SELECT P.Park_Code, P.Park_Name, S.Scientific_Name, S.Category
+            FROM Species S
+            JOIN Parks P on S.Park_Code = P.Park_Code
+            GROUP BY P.Park_Code, P.Park_Name, S.Scientific_Name)
+        SELECT DISTINCT SS.SCIENTIFIC_NAME, S.Category
+            FROM species_in_park SS
+            JOIN species_in_park SS2 on SS.Scientific_Name = SS2.Scientific_Name
+            WHERE SS.Park_Code = '${req.params.parkid}'
+            GROUP BY SS.Park_Name, SS.Park_Code, S.Category, SS.Scientific_Name
+            HAVING COUNT(*) = 1;`, function (error, results, fields) {
+                if (error) {
+                    console.log(error)
+                    res.json({ error: error })
+                } else if (results) {
+                    res.json({ results: results })
+                }
+            });
+    } else {
+        res.json({"error": "Park ID not specified!"})
+    }
+}
+
+
 module.exports = {
     hello,
     all_parks,
@@ -290,4 +319,5 @@ module.exports = {
     airports_by_park,
     evstations_by_park,
     species_categories_by_park,
+    unique_species_by_park,
 }

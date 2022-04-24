@@ -32,6 +32,9 @@ app.get('/evstations/:parkid', routes.evstations_by_park)
 // Route 7 - get species distribution by category by park
 app.get('/species/:parkid', routes.species_categories_by_park)
 
+// Route 8 - get unique scientific names by park
+app.get('/uniquespecies/:parkid', routes.unique_species_by_park)
+
 app.listen(PORT, () => {
     console.log(`Server running at http://${config.server_host}:${PORT}/`);
 });

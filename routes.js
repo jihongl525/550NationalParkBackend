@@ -295,7 +295,7 @@ async function unique_species_by_park(req, res) {
             FROM Species S
             JOIN Parks P on S.Park_Code = P.Park_Code
             GROUP BY P.Park_Code, P.Park_Name, S.Scientific_Name)
-        SELECT DISTINCT SS.Scientific_Name, SS.Category
+        SELECT DISTINCT SS.SCIENTIFIC_NAME, SS.Category
             FROM species_in_park SS
             WHERE SS.Park_Code = '${req.params.parkid}'
             AND SS.Scientific_Name NOT IN (SELECT SS2.Scientific_Name FROM species_in_park SS2 WHERE SS2.Park_Code <> '${req.params.parkid}')

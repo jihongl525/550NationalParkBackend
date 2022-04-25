@@ -297,11 +297,9 @@ async function unique_species_by_park(req, res) {
             GROUP BY P.Park_Code, P.Park_Name, S.Scientific_Name)
         SELECT DISTINCT SS.Scientific_Name, SS.Category
             FROM species_in_park SS
-            JOIN species_in_park SS2 on SS.Scientific_Name = SS2.Scientific_Name
             WHERE SS.Park_Code = '${req.params.parkid}'
-            GROUP BY SS.Park_Name, SS.Park_Code, SS.Scientific_Name, SS.Category
-            HAVING COUNT(*) = 1
-            ORDER BY SS.Category, SS.Scientific_Name;`, function (error, results, fields) {
+            AND SS.Scientific_Name NOT IN (SELECT SS2.Scientific_Name FROM species_in_park SS2 WHERE SS2.Park_Code <> '${req.params.parkid}')
+            ORDER BY SS.Category, SS.Scientific_Name`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })

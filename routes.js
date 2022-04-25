@@ -202,7 +202,7 @@ async function airports_by_park(req, res) {
         console.time('with-view')
         connection.query(`SELECT DISTINCT Name, State
             FROM Airports_Near_Parks_View
-            WHERE Park_Code = '${req.params.parkid}
+            WHERE Park_Code = '${req.params.parkid}'
             ORDER BY State`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
@@ -246,7 +246,7 @@ async function evstations_by_park(req, res) {
         console.time('with-view')
         connection.query(`SELECT Name, Address, City, State, Zip
             FROM EV_Stations_Near_Parks_View
-            WHERE Park_Code = '${req.params.parkid}
+            WHERE Park_Code = '${req.params.parkid}'
             ORDER BY State, City, Zip, Name`, function (error, results, fields) {
                 if (error) {
                     console.log(error)

@@ -202,7 +202,8 @@ async function airports_by_park(req, res) {
         console.time('with-view')
         connection.query(`SELECT DISTINCT Name, State
             FROM Airports_Near_Parks_View
-            WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
+            WHERE Park_Code = '${req.params.parkid}
+            ORDER BY State, Name'`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })
@@ -245,7 +246,8 @@ async function evstations_by_park(req, res) {
         console.time('with-view')
         connection.query(`SELECT Name, Address, City, State, Zip
             FROM EV_Stations_Near_Parks_View
-            WHERE Park_Code = '${req.params.parkid}'`, function (error, results, fields) {
+            WHERE Park_Code = '${req.params.parkid}
+            ORDER BY State, City, Zip, Name'`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })
@@ -268,7 +270,8 @@ async function species_categories_by_park(req, res) {
         connection.query(`SELECT Category, COUNT(DISTINCT Scientific_Name) AS numSpecies
             FROM Species
             WHERE Park_Code = '${req.params.parkid}'
-            GROUP BY Category`, function (error, results, fields) {
+            GROUP BY Category
+            ORDER BY numSpecies DESC`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })
@@ -292,12 +295,13 @@ async function unique_species_by_park(req, res) {
             FROM Species S
             JOIN Parks P on S.Park_Code = P.Park_Code
             GROUP BY P.Park_Code, P.Park_Name, S.Scientific_Name)
-        SELECT DISTINCT SS.SCIENTIFIC_NAME, SS.Category
+        SELECT DISTINCT SS.Scientific_Name, SS.Category
             FROM species_in_park SS
             JOIN species_in_park SS2 on SS.Scientific_Name = SS2.Scientific_Name
             WHERE SS.Park_Code = '${req.params.parkid}'
             GROUP BY SS.Park_Name, SS.Park_Code, SS.Scientific_Name, SS.Category
-            HAVING COUNT(*) = 1;`, function (error, results, fields) {
+            HAVING COUNT(*) = 1
+            ORDER BY SS.Category, SS.Scientific_Name;`, function (error, results, fields) {
                 if (error) {
                     console.log(error)
                     res.json({ error: error })
